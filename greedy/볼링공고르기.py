@@ -30,4 +30,3 @@ for set in comb(arr, 2):
 
 print(res)
 
-
