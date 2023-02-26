@@ -1,0 +1,45 @@
+ steps:
+ # Build the container image
+ - name: 'gcr.io/cloud-builders/docker'
+   args: ['build', '-t', 'gcr.io/$PROJECT_ID/codingtest:$COMMIT_SHA', '.']
+ # Push the container image to Container Registry
+ - name: 'gcr.io/cloud-builders/docker'
+   args: ['push', 'gcr.io/$PROJECT_ID/codingtest:$COMMIT_SHA']
+ # Deploy container image to Cloud Run
+ - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+   entrypoint: gcloud
+   args:
+   - 'run'
+   - 'deploy'
+   - 'codingtest'
+   - '--image'
+   - 'gcr.io/$PROJECT_ID/codingtest:$COMMIT_SHA'
+   - '--region'
+   - 'us-central1'
+ images:
+ - 'gcr.io/$PROJECT_ID/codingtest:$COMMIT_SHA'
+
+
+# steps:
+
+#   - name: docker/compose:1.29.0
+#     args:
+#       - -f
+#       - docker-compose.prod.yaml
+#       - build
+
+#   - name: docker/compose:1.29.0
+#     args:
+#       - -f
+#       - docker-compose.prod.yaml
+#       - push
+
+#   - name: gcr.io/cloud-builders/kubectl
+#     args:
+#       - set
+#       - image
+#       - deployment/codingtest
+#       - back-sha256-1=asia.gcr.io/greengame-379013/back:0.1.1
+#     env:
+#       - CLOUDSDK_COMPUTE_ZONE=asia-northeast3
+#       - CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-codingtest
